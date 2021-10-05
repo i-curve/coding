@@ -6,7 +6,6 @@ type Code interface {
 	Message() string
 	Wrap(data interface{}) Code
 	Unwrap() Code
-	// Test() Code
 }
 
 // coding .
@@ -63,12 +62,6 @@ func (c *coding) Wrap(data interface{}) Code {
 	return c
 }
 
-// func (c coding) Test() (result Code) {
-// 	if c.point != nil {
-// 		return c.point
-// 	}
-// 	return
-// }
 func (c *coding) Unwrap() (result Code) {
 	if c == nil || c.point == nil {
 		return
@@ -88,25 +81,3 @@ func New(code int, data interface{}) Code {
 	}
 	return nil
 }
-
-// func New(code int, text string) Code {
-// 	if text == "" {
-// 		return nil
-// 	}
-// 	return &coding{code, text, nil}
-// }
-
-// func NewWithError(code int, err error) Code {
-// 	if err == nil {
-// 		return nil
-// 	}
-// 	return &coding{code, err.Error(), nil}
-// }
-
-// NewWithCode genernate a new coding.Code by coding.Code
-// func NewWithCode(code Code) Code {
-// 	if code == nil {
-// 		return nil
-// 	}
-// 	return &coding{code.Code(), code.Error(), nil}
-// }

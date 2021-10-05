@@ -59,8 +59,6 @@ func Is(data, target Code) bool {
 		return data == target
 	}
 	for {
-		// fmt.Println("xxxxxxxx")
-		// fmt.Println("message: ", data.Code(), data.Message())
 		if data.Code() == target.Code() && data.Message() == target.Message() && data.Error() == target.Error() {
 			return true
 		}
