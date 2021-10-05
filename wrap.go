@@ -1,37 +1,54 @@
 package coding
 
-import (
-	"reflect"
-	"strings"
-)
+// func Wrap(code *Code, data interface{}) Code {
+// 	// if code == nil || reflect.TypeOf(code).Kind() != reflect.Ptr {
+// 	// 	return nil
+// 	// } else {
+// 	// 	code :=
+// 	// }
+// 	codes, isCode := data.(Code)
+// 	if isCode {
+// 		target, isCode := codes.(*coding)
+// 		if !isCode {
+// 			ans, ok := (*code).(*coding)
+// 			if code == nil || !ok {
+// 				return target
+// 			}
+// 			ans.point = target
+// 			return ans
+// 		}
+// 	}
+// 	err, isError := data.(error)
+// 	if isError {
+// 		ans, ok := (*code).(*coding)
+// 		if code == nil || !ok {
+// 			return New(0, err.Error())
+// 		}
+// 		ans.point = &coding{0, err.Error(), nil}
+// 		return ans
+// 	}
+// 	return *code
+// }
 
-func Wrap(code, target Code) Code {
-	return New(target.Code(), target.Error()+"\n"+code.Error())
+func Unwrap(code Code) (result Code) {
+	if target, ok := code.(*coding); ok && target.point != nil {
+		return target.point
+	}
+	return
 }
 
-func Unwrap(code Code) Code {
-	length := len(strings.Split(code.Error(), "\n"))
-	if length <= 1 {
-		return nil
+func Is(data, target Code) bool {
+	if target == nil || data == nil {
+		return data == target
 	}
-	return New(code.Code(), strings.Join(strings.Split(code.Error(), "\n")[:length-1], "\n"))
-}
-
-func Is(code, target Code) bool {
-	if target == nil {
-		return code == target
-	}
-	isComparable := reflect.TypeOf(target).Comparable()
 	for {
-		if isComparable && code == target {
+		// fmt.Println("xxxxxxxx")
+		// fmt.Println("message: ", data.Code(), data.Message())
+		if data.Code() == target.Code() && data.Message() == target.Message() && data.Error() == target.Error() {
 			return true
 		}
 
-		if code.Code() == target.Code() && code.Error() == target.Error() && code.Message() == target.Message() {
-			return true
-		}
-
-		if code = Unwrap(code); code == nil {
+		if data = Unwrap(data); data == nil {
 			return false
 		}
 	}

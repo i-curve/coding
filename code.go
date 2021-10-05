@@ -1,6 +1,8 @@
 package coding
 
 const (
+	INIT = 0 // SET DEFAULT VALUE
+
 	StatusContinue           = 100 // RFC 7231, 6.2.1
 	StatusSwitchingProtocols = 101 // RFC 7231, 6.2.2
 	StatusProcessing         = 102 // RFC 2518, 10.1
