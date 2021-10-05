@@ -30,6 +30,23 @@ package coding
 // 	return *code
 // }
 
+func Append(source Code, code int, data interface{}) (result Code) {
+	var point *coding
+	if sourceValue, ok := source.(*coding); ok {
+		point = sourceValue
+	}
+	if text, ok := data.(string); ok && text != "" {
+		return &coding{code, text, point}
+	}
+	if err, ok := data.(error); ok && err != nil && err.Error() != "" {
+		return &coding{code, err.Error(), point}
+	}
+	if point != nil {
+		return point
+	}
+	return
+}
+
 func Unwrap(code Code) (result Code) {
 	if target, ok := code.(*coding); ok && target.point != nil {
 		return target.point

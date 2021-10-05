@@ -219,11 +219,47 @@ func Test8(t *testing.T) {
 	}
 }
 
-// func Test9(t *testing.T) {
-// 	err := errors.New("错误点2")
-// 	code1 := coding.New(100, "错误点1")
-// 	code2 := coding.New(200, err)
-// 	code3 := coding.New(300, "错误点3")
-// 	coding.Wrap(&code2, code1)
-// 	coding.Wrap(&code3, code2)
-// }
+func Test10(t *testing.T) {
+	var err error
+	var code coding.Code
+	ans := coding.Append(code, 100, err)
+	if ans != nil {
+		t.Error("err append by 10")
+	}
+	code1 := coding.New(100, "错误点1")
+	code2 := coding.Append(code1, 100, err)
+	if !coding.Is(code2, code1) {
+		t.Error("err append by  10")
+	}
+	// printcode(code2)
+	err = errors.New("错误点")
+	// ans = coding.Append(code, 100, err)
+	// printcode(ans)
+	code2 = coding.Append(code1, 100, err)
+	if !coding.Is(code2, code1) {
+		t.Error("err append by 10")
+	}
+	// printcode(code2)
+}
+func Test11(t *testing.T) {
+	var str string
+	var code coding.Code
+	ans := coding.Append(code, 100, str)
+	if ans != nil {
+		t.Error("err append by 11")
+	}
+	code1 := coding.New(100, "错误点1")
+	code2 := coding.Append(code1, 100, str)
+	if !coding.Is(code2, code1) {
+		t.Error("err append by  11")
+	}
+	// printcode(code2)
+	str = "错误点"
+	// ans = coding.Append(code, 100, err)
+	// printcode(ans)
+	code2 = coding.Append(code1, 100, str)
+	if !coding.Is(code2, code1) {
+		t.Error("err append by 11")
+	}
+	// printcode(code2)
+}
