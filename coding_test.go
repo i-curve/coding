@@ -263,3 +263,20 @@ func Test11(t *testing.T) {
 	}
 	// printcode(code2)
 }
+
+func Test12(t *testing.T) {
+	var code coding.Code
+	code1 := coding.New(100, "错误点1")
+	code2 := coding.New(200, "错误点2")
+	code = coding.Append(code, 0, "错误点")
+	if code == nil {
+		t.Error("err append by 12")
+	}
+
+	if coding.Append(code1, 1000, "错误点11") == nil {
+		t.Error("err append by 12")
+	}
+	if coding.Append(code2, 2000, "错误点22") == nil {
+		t.Error("err append by 12")
+	}
+}

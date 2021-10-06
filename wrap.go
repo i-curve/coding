@@ -29,22 +29,46 @@ package coding
 // 	}
 // 	return *code
 // }
-
-func Append(source Code, code int, data interface{}) (result Code) {
-	var point *coding
-	if sourceValue, ok := source.(*coding); ok {
+// func indirect(reflectValue reflect.Value) reflect.Value {
+// 	for reflectValue.Kind() == reflect.Ptr {
+// 		reflectValue = reflectValue.Elem()
+// 	}
+// 	return reflectValue
+// }
+// func indirectType(reflectType reflect.Type) (_ reflect.Type, isPtr bool) {
+// 	for reflectType.Kind() == reflect.Ptr || reflectType.Kind() == reflect.Slice {
+// 		reflectType = reflectType.Elem()
+// 		isPtr = true
+// 	}
+// 	return reflectType, isPtr
+// }
+func Append(sourceFrom interface{}, code int, data interface{}) Code {
+	var (
+		point *coding
+		tmp   Code
+	)
+	// sourceValue := indirect(reflect.ValueOf(sourceFrom))
+	// sourceType, isPtr := indirectType(reflect.TypeOf(sourceFrom))
+	// if sourceType == reflect.TypeOf(coding) {
+	// 	point = &sourceValue
+	// }
+	sourceValue, okInit := sourceFrom.(*coding)
+	if okInit {
 		point = sourceValue
 	}
 	if text, ok := data.(string); ok && text != "" {
-		return &coding{code, text, point}
+		tmp = &coding{code, text, point}
 	}
 	if err, ok := data.(error); ok && err != nil && err.Error() != "" {
-		return &coding{code, err.Error(), point}
+		tmp = &coding{code, err.Error(), point}
 	}
-	if point != nil {
-		return point
+	if tmp == nil && point != nil {
+		tmp = point
 	}
-	return
+	// if okInit {
+	// 	sourceFrom = tmp
+	// }
+	return tmp
 }
 
 func Unwrap(code Code) (result Code) {
