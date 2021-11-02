@@ -1,6 +1,7 @@
 package coding
 
 type Code interface {
+	HTTPCode() int
 	Code() int
 	Error() string
 	Message() string
@@ -10,9 +11,15 @@ type Code interface {
 
 // coding .
 type coding struct {
-	code  int
-	text  string
-	point *coding
+	httpCode int
+	code     int
+	text     string
+	point    *coding
+}
+
+// HTTPCode return the http status code for front end.
+func (c *coding) HTTPCode() int {
+	return c.httpCode
 }
 
 // Code return the http status code for front end.
@@ -55,9 +62,9 @@ func (c *coding) Wrap(data interface{}) Code {
 	}
 	if code, ok2 := data.(error); ok2 && !ok1 {
 		if c == nil {
-			return New(0, code.Error())
+			return New(0, 0, code.Error())
 		}
-		c.point = &coding{0, code.Error(), nil}
+		c.point = &coding{0, 0, code.Error(), nil}
 	}
 	return c
 }
@@ -72,12 +79,12 @@ func (c *coding) Unwrap() (result Code) {
 // New accept two args:code and data. data only accepts string or coding.Code,otherwise, it
 // will return nil.
 // Note: if the string is "" or error.Error() equal "", it alse return nil.
-func New(code int, data interface{}) Code {
+func New(httpCode, code int, data interface{}) Code {
 	if text, ok := data.(string); ok && text != "" {
-		return &coding{code, text, nil}
+		return &coding{httpCode, code, text, nil}
 	}
 	if err, ok := data.(error); ok && err != nil && err.Error() != "" {
-		return &coding{code, err.Error(), nil}
+		return &coding{httpCode, code, err.Error(), nil}
 	}
 	return nil
 }
