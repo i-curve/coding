@@ -49,3 +49,7 @@ type coding struct {
 ```go
 // todo
 ```
+
+## License
+
+__LICENSE__
