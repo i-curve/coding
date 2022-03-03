@@ -1,6 +1,6 @@
 # Coding
 
-![language](https://img.shields.io/badge/language-go-green) ![tests](https://img.shields.io/badge/tests-passing-green) [![License](https://img.shields.io/badge/license-BSD--3-green)](LICENSE)
+![language](https://img.shields.io/badge/language-go-brightgreen) ![tests](https://img.shields.io/badge/tests-passing-brightgreen) [![License](https://img.shields.io/badge/license-BSD--3-brightgreen)](LICENSE)
 
 参照 go 内置 errors 的实现方法实现 coding.Code.  
 内部集成 string 和 error 这两种类型, 可以无缝使用切换.
