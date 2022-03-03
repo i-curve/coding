@@ -96,13 +96,19 @@ func (c *coding) Error() (str string) {
 	return str
 }
 
-// Append
+// Append next node in the c' next.
 func (c *coding) Append(data interface{}) (code Code) {
 	if c == nil {
 		return c
 	}
 	if text, ok := data.(*coding); ok {
 		c.point = text
+	}
+	if text, ok := data.(string); ok && text != "" {
+		c.point = &coding{0, 0, text, nil}
+	}
+	if text, ok := data.(error); ok && text != nil && text.Error() != "" {
+		c.point = &coding{0, 0, text.Error(), nil}
 	}
 	return c
 }
