@@ -5,6 +5,7 @@ type Code interface {
 	Code() int
 	Error() string
 	Message() string
+	Append(data interface{}) Code
 	Wrap(data interface{}) Code
 	Unwrap() error
 }
@@ -95,11 +96,13 @@ func (c *coding) Error() (str string) {
 	return str
 }
 
-// todo
 // Append
 func (c *coding) Append(data interface{}) (code Code) {
 	if c == nil {
 		return c
 	}
-	return
+	if text, ok := data.(*coding); ok {
+		c.point = text
+	}
+	return c
 }

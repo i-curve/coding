@@ -318,3 +318,17 @@ func Test15(t *testing.T) {
 		t.Error("err Is by 15")
 	}
 }
+
+func Test16(t *testing.T) {
+	code1 := coding.New(0, 100, "错误点1")
+	code2 := coding.New(0, 200, "错误点2")
+	code3 := code1.Append(code2)
+	// fmt.Println(code3.HTTPCode(), code3.Code(), code3.Message(), "\n", code3.Error())
+	// fmt.Println(code1.HTTPCode(), code1.Code(), code1.Message(), "\n", code1.Error())
+	if code1.Error() != "错误点1;错误点2" {
+		t.Error("err Error by 16")
+	}
+	if !coding.Is(code1, code3) {
+		t.Error("err Is by 16")
+	}
+}
