@@ -26,7 +26,7 @@ func Append(sourceFrom interface{}, data interface{}) Code {
 	if text, ok := data.(string); ok && text != "" {
 		tmp = &coding{point.httpCode, point.code, text, point}
 	}
-	if test, ok := data.(coding); ok {
+	if test, ok := data.(*coding); ok && test != nil {
 		tmp = &coding{test.httpCode, test.code, test.text, point}
 	}
 	if err, ok := data.(error); ok && err != nil && err.Error() != "" {
