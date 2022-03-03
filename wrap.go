@@ -1,5 +1,9 @@
 package coding
 
+import (
+	"reflect"
+)
+
 // Append :append new node after the code.
 // the first parameter is the code, the second parameter is the the message.It will be used when
 // the code is not nil. So you can't judge if the code is nil.
@@ -31,29 +35,67 @@ func Append(sourceFrom interface{}, data interface{}) Code {
 	return tmp
 }
 
-func Unwrap(code Code) (result Code) {
+// Unwrap returns the result of calling the Unwrap method on err. If err's type
+// isn't Coding.Code, Unwrap call Unwrap function. Otherwise, it returns err.
+func Unwrap(code error) (result error) {
 	if target, ok := code.(*coding); ok && target.point != nil {
 		return target.point
+	}
+	if target, ok := code.(interface {
+		Unwrap() error
+	}); ok {
+		return target.Unwrap()
 	}
 	return
 }
 
-func Is(data, target Code) bool {
-	if target == nil || data == nil {
-		return data == target
+// Is reports whether any data in target's chain matches target.
+func Is(err, target error) bool {
+	if target == nil || err == nil {
+		return err == target
 	}
+
+	isCompareable := reflect.TypeOf(target).Comparable()
 	for {
-		if data.Code() == target.Code() && data.Message() == target.Message() && data.Error() == target.Error() {
+		if isCompareable && err == target {
+			return true
+		}
+		if x, ok := err.(interface {
+			Is(error) bool
+		}); ok && x.Is(target) {
 			return true
 		}
 
-		if data = Unwrap(data); data == nil {
+		if err = Unwrap(err); err == nil {
 			return false
 		}
 	}
 }
 
-// TODO
-// func As() {
+func As(code error, target interface{}) bool {
+	if target == nil {
+		panic("errors: target cannot be nil")
+	}
+	val := reflect.ValueOf(target)
+	typ := val.Type()
+	if typ.Kind() != reflect.Ptr || val.IsNil() {
+		panic("errors: target must be a pointer")
+	}
+	targetType := typ.Elem()
+	if targetType.Kind() != reflect.Interface && !targetType.Implements(errorType) {
+		panic("errors: target must be a pointer to an interface or implement error")
+	}
+	for code != nil {
+		if reflect.TypeOf(code).AssignableTo(targetType) {
+			val.Elem().Set(reflect.ValueOf(code))
+			return true
+		}
+		if x, ok := code.(interface{ As(interface{}) bool }); ok && x.As(target) {
+			return true
+		}
+		code = Unwrap(code)
+	}
+	return false
+}
 
-// }
+var errorType = reflect.TypeOf((*error)(nil)).Elem()

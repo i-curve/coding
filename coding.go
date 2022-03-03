@@ -6,7 +6,7 @@ type Code interface {
 	Error() string
 	Message() string
 	Wrap(data interface{}) Code
-	Unwrap() Code
+	Unwrap() error
 }
 
 // coding .
@@ -18,34 +18,23 @@ type coding struct {
 }
 
 // HTTPCode return the http status code for front end.
-func (c *coding) HTTPCode() int {
-	return c.httpCode
+func (c *coding) HTTPCode() (result int) {
+	if c != nil {
+		result = c.httpCode
+	}
+	return
 }
 
 // Code return the http status code for front end.
-func (c coding) Code() int {
-	return c.code
-}
-
-// Error return the error message for coder.
-func (c *coding) Error() (str string) {
-	point := c
-	for {
-		if point == nil {
-			break
-		}
-		if str != "" {
-			str += ";" + point.text
-		} else {
-			str += point.text
-		}
-		point = point.point
+func (c *coding) Code() (result int) {
+	if c != nil {
+		result = c.code
 	}
-	return str
+	return
 }
 
 // Message return the error message for users.
-func (c coding) Message() string {
+func (c *coding) Message() string {
 	return c.text
 }
 
@@ -69,14 +58,14 @@ func (c *coding) Wrap(data interface{}) Code {
 	return c
 }
 
-func (c *coding) Unwrap() (result Code) {
+func (c *coding) Unwrap() (result error) {
 	if c == nil || c.point == nil {
 		return
 	}
 	return c.point
 }
 
-// New accept two args:code and data. data only accepts string or coding.Code,otherwise, it
+// New accept three args: httpCode, code and data. data only accepts string or error. otherwise, it
 // will return nil.
 // Note: if the string is "" or error.Error() equal "", it alse return nil.
 func New(httpCode, code int, data interface{}) Code {
@@ -87,4 +76,30 @@ func New(httpCode, code int, data interface{}) Code {
 		return &coding{httpCode, code, err.Error(), nil}
 	}
 	return nil
+}
+
+// Error return the error message for coder.
+func (c *coding) Error() (str string) {
+	point := c
+	for {
+		if point == nil {
+			break
+		}
+		if str != "" {
+			str += ";" + point.text
+		} else {
+			str += point.text
+		}
+		point = point.point
+	}
+	return str
+}
+
+// todo
+// Append
+func (c *coding) Append(data interface{}) (code Code) {
+	if c == nil {
+		return c
+	}
+	return
 }

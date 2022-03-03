@@ -292,8 +292,29 @@ func Test13(t *testing.T) {
 	}
 	var c iCode
 	if errors.As(err, &c) {
-		fmt.Println("ok")
+		// fmt.Println("ok: ", c.Message(), c.Code(), c.HTTPCode())
 	} else {
 		t.Error("err As by 13")
+	}
+}
+
+func Test14(t *testing.T) {
+	var err coding.Code
+	code := coding.New(0, 100, "错误点1")
+	if coding.As(code, &err) {
+		// fmt.Printf("%+v\n", err)
+	} else {
+		t.Error("err As by 14")
+	}
+}
+
+func Test15(t *testing.T) {
+	code1 := coding.New(0, 100, "错误点1")
+	code2 := coding.New(0, 200, "错误点1")
+	if coding.Is(code1, code2) {
+		t.Error("err Is by 15")
+	}
+	if !coding.Is(code1, code1) {
+		t.Error("err Is by 15")
 	}
 }
