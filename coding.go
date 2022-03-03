@@ -103,11 +103,9 @@ func (c *coding) Append(data interface{}) (code Code) {
 	}
 	if text, ok := data.(*coding); ok {
 		c.point = text
-	}
-	if text, ok := data.(string); ok && text != "" {
+	} else if text, ok := data.(string); ok && text != "" {
 		c.point = &coding{0, 0, text, nil}
-	}
-	if text, ok := data.(error); ok && text != nil && text.Error() != "" {
+	} else if text, ok := data.(error); ok && text != nil && text.Error() != "" {
 		c.point = &coding{0, 0, text.Error(), nil}
 	}
 	return c
