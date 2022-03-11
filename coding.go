@@ -99,14 +99,17 @@ func (c *coding) Error() (str string) {
 // Append next node in the c' next.
 func (c *coding) Append(data interface{}) (code Code) {
 	if c == nil {
+		return nil
+	}
+	if text, ok := data.(string); ok && text != "" {
+		code = &coding{c.httpCode, c.code, text, c}
+	} else if text, ok := data.(*coding); ok && text != nil {
+		code = &coding{text.httpCode, text.code, text.text, c}
+	} else if err, ok := data.(error); ok && err != nil && err.Error() != "" {
+		code = &coding{c.httpCode, c.code, err.Error(), c}
+	}
+	if code == nil {
 		return c
 	}
-	if text, ok := data.(*coding); ok {
-		c.point = text
-	} else if text, ok := data.(string); ok && text != "" {
-		c.point = &coding{0, 0, text, nil}
-	} else if text, ok := data.(error); ok && text != nil && text.Error() != "" {
-		c.point = &coding{0, 0, text.Error(), nil}
-	}
-	return c
+	return code
 }
