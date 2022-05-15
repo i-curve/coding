@@ -39,6 +39,24 @@ func (c *coding) Message() string {
 	return c.text
 }
 
+// Error return the error message for coder.
+func (c *coding) Error() (str string) {
+	point := c
+	for {
+		if point == nil {
+			break
+		}
+		if str != "" {
+			str += ";" + point.text
+		} else {
+			str += point.text
+		}
+		point = point.point
+	}
+	return str
+}
+
+// Wrap: add a new node and this node's point.
 func (c *coding) Wrap(data interface{}) Code {
 	code1, ok1 := data.(Code)
 	if ok1 {
@@ -55,6 +73,12 @@ func (c *coding) Wrap(data interface{}) Code {
 			return New(0, 0, code.Error())
 		}
 		c.point = &coding{0, 0, code.Error(), nil}
+	}
+	if text, ok := data.(string); ok {
+		if c == nil {
+			return New(0, 0, text)
+		}
+		c.point = &coding{0, 0, text, nil}
 	}
 	return c
 }
@@ -79,24 +103,9 @@ func New(httpCode, code int, data interface{}) Code {
 	return nil
 }
 
-// Error return the error message for coder.
-func (c *coding) Error() (str string) {
-	point := c
-	for {
-		if point == nil {
-			break
-		}
-		if str != "" {
-			str += ";" + point.text
-		} else {
-			str += point.text
-		}
-		point = point.point
-	}
-	return str
-}
-
-// Append next node in the c' next.
+// New a new node and the new node's point refer to this
+//
+// support type: string,Code,error
 func (c *coding) Append(data interface{}) (code Code) {
 	if c == nil {
 		return nil

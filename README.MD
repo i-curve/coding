@@ -3,7 +3,7 @@
 ![language](https://img.shields.io/badge/language-go-brightgreen) ![tests](https://img.shields.io/badge/tests-passing-brightgreen) [![License](https://img.shields.io/badge/license-BSD--3-brightgreen)](LICENSE)
 
 参照 go 内置 errors 的实现方法实现 coding.Code.  
-内部集成 string 和 error 这两种类型, 可以无缝使用切换.
+内部集成 string 和 error 这两种类型, 可以无缝切换使用.
 用户向前端返回状态码和错误信息
 
 ## 具备功能
@@ -87,9 +87,11 @@ func main() {
 	code1.Append(code2)
 	fmt.Println(code1.HTTPCode(), code1.Code(), code1.Message(), code1.Error())
 	// 500 0 Server Error Server Error;err1
-	code1.Append("err2") // Code{500, 0, "Server Error", "Server Error;err2"}
+	code1.Append("err2")
+	// Code{500, 0, "Server Error", "Server Error;err2"}
 	err3 := errors.New("this is error3")
-	code2.Append(err3) // Code{404, 0, "err1", "err1;this is error3"}
+	code2.Append(err3)
+	// Code{404, 0, "err1", "err1;this is error3"}
 
 	// Unwrap 包方法
 	var codex coding.Code
@@ -97,6 +99,9 @@ func main() {
 	coding.As(err, &codex)      // => true
 	fmt.Println(codex.HTTPCode(), codex.Code(), codex.Error())
 	//  500 0 Server Error
+
+	// Wrap 包方法
+	// 添加一个新的阶段作为当前节点的子节点
 
 	// As 包方法
 	// 用于把Code类型的错误转换为指定的错误类型
